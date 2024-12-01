@@ -1,7 +1,7 @@
 site_name: PARS - Papers And Research Summaries
 site_author: xjsc01 # 作者
-repo_name: PARS
-repo_url: 
+repo_name: xjsc01/pars
+repo_url: https://github.com/xjsc01/pars
 copyright: Copyright © 2024 xjsc01
 
 markdown_extensions:
