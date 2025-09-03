@@ -1,0 +1,1435 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="xjsc01">
+      
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../CozyVoice/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>Audio-Thinker: Guiding Audio Language Model When and How to Think via Reinforcement Learning - PARS - Papers And Research Summaries</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+  
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+  
+  <style>:root{--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M1%207.775V2.75C1%201.784%201.784%201%202.75%201h5.025c.464%200%20.91.184%201.238.513l6.25%206.25a1.75%201.75%200%200%201%200%202.474l-5.026%205.026a1.75%201.75%200%200%201-2.474%200l-6.25-6.25A1.75%201.75%200%200%201%201%207.775m1.5%200c0%20.066.026.13.073.177l6.25%206.25a.25.25%200%200%200%20.354%200l5.025-5.025a.25.25%200%200%200%200-.354l-6.25-6.25a.25.25%200%200%200-.177-.073H2.75a.25.25%200%200%200-.25.25ZM6%205a1%201%200%201%201%200%202%201%201%200%200%201%200-2%22/%3E%3C/svg%3E');--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M2.5%201.75v11.5c0%20.138.112.25.25.25h3.17a.75.75%200%200%201%200%201.5H2.75A1.75%201.75%200%200%201%201%2013.25V1.75C1%20.784%201.784%200%202.75%200h8.5C12.216%200%2013%20.784%2013%201.75v7.736a.75.75%200%200%201-1.5%200V1.75a.25.25%200%200%200-.25-.25h-8.5a.25.25%200%200%200-.25.25m13.274%209.537zl-4.557%204.45a.75.75%200%200%201-1.055-.008l-1.943-1.95a.75.75%200%200%201%201.062-1.058l1.419%201.425%204.026-3.932a.75.75%200%201%201%201.048%201.074M4.75%204h4.5a.75.75%200%200%201%200%201.5h-4.5a.75.75%200%200%201%200-1.5M4%207.75A.75.75%200%200%201%204.75%207h2a.75.75%200%200%201%200%201.5h-2A.75.75%200%200%201%204%207.75%22/%3E%3C/svg%3E');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M0%208a8%208%200%201%201%2016%200A8%208%200%200%201%200%208m8-6.5a6.5%206.5%200%201%200%200%2013%206.5%206.5%200%200%200%200-13M6.5%207.75A.75.75%200%200%201%207.25%207h1a.75.75%200%200%201%20.75.75v2.75h.25a.75.75%200%200%201%200%201.5h-2a.75.75%200%200%201%200-1.5h.25v-2h-.25a.75.75%200%200%201-.75-.75M8%206a1%201%200%201%201%200-2%201%201%200%200%201%200%202%22/%3E%3C/svg%3E');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M3.499.75a.75.75%200%200%201%201.5%200v.996C5.9%202.903%206.793%203.65%207.662%204.376l.24.202c-.036-.694.055-1.422.426-2.163C9.1.873%2010.794-.045%2012.622.26%2014.408.558%2016%201.94%2016%204.25c0%201.278-.954%202.575-2.44%202.734l.146.508.065.22c.203.701.412%201.455.476%202.226.142%201.707-.4%203.03-1.487%203.898C11.714%2014.671%2010.27%2015%208.75%2015h-6a.75.75%200%200%201%200-1.5h1.376a4.5%204.5%200%200%201-.563-1.191%203.84%203.84%200%200%201-.05-2.063%204.65%204.65%200%200%201-2.025-.293.75.75%200%200%201%20.525-1.406c1.357.507%202.376-.006%202.698-.318l.009-.01a.747.747%200%200%201%201.06%200%20.75.75%200%200%201-.012%201.074c-.912.92-.992%201.835-.768%202.586.221.74.745%201.337%201.196%201.621H8.75c1.343%200%202.398-.296%203.074-.836.635-.507%201.036-1.31.928-2.602-.05-.603-.216-1.224-.422-1.93l-.064-.221c-.12-.407-.246-.84-.353-1.29a2.4%202.4%200%200%201-.507-.441%203.1%203.1%200%200%201-.633-1.248.75.75%200%200%201%201.455-.364c.046.185.144.436.31.627.146.168.353.305.712.305.738%200%201.25-.615%201.25-1.25%200-1.47-.95-2.315-2.123-2.51-1.172-.196-2.227.387-2.706%201.345-.46.92-.27%201.774.019%203.062l.042.19.01.05c.348.443.666.949.94%201.553a.75.75%200%201%201-1.365.62c-.553-1.217-1.32-1.94-2.3-2.768L6.7%205.527c-.814-.68-1.75-1.462-2.692-2.619a3.7%203.7%200%200%200-1.023.88c-.406.495-.663%201.036-.722%201.508.116.122.306.21.591.239.388.038.797-.06%201.032-.19a.75.75%200%200%201%20.728%201.31c-.515.287-1.23.439-1.906.373-.682-.067-1.473-.38-1.879-1.193L.75%205.677V5.5c0-.984.48-1.94%201.077-2.664.46-.559%201.05-1.055%201.673-1.353z%22/%3E%3C/svg%3E');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M13.78%204.22a.75.75%200%200%201%200%201.06l-7.25%207.25a.75.75%200%200%201-1.06%200L2.22%209.28a.75.75%200%200%201%20.018-1.042.75.75%200%200%201%201.042-.018L6%2010.94l6.72-6.72a.75.75%200%200%201%201.06%200%22/%3E%3C/svg%3E');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M0%208a8%208%200%201%201%2016%200A8%208%200%200%201%200%208m8-6.5a6.5%206.5%200%201%200%200%2013%206.5%206.5%200%200%200%200-13M6.92%206.085h.001a.749.749%200%201%201-1.342-.67c.169-.339.436-.701.849-.977C6.845%204.16%207.369%204%208%204a2.76%202.76%200%200%201%201.637.525c.503.377.863.965.863%201.725%200%20.448-.115.83-.329%201.15-.205.307-.47.513-.692.662-.109.072-.22.138-.313.195l-.006.004a6%206%200%200%200-.26.16%201%201%200%200%200-.276.245.75.75%200%200%201-1.248-.832c.184-.264.42-.489.692-.661q.154-.1.313-.195l.007-.004c.1-.061.182-.11.258-.161a1%201%200%200%200%20.277-.245C8.96%206.514%209%206.427%209%206.25a.61.61%200%200%200-.262-.525A1.27%201.27%200%200%200%208%205.5c-.369%200-.595.09-.74.187a1%201%200%200%200-.34.398M9%2011a1%201%200%201%201-2%200%201%201%200%200%201%202%200%22/%3E%3C/svg%3E');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M6.457%201.047c.659-1.234%202.427-1.234%203.086%200l6.082%2011.378A1.75%201.75%200%200%201%2014.082%2015H1.918a1.75%201.75%200%200%201-1.543-2.575Zm1.763.707a.25.25%200%200%200-.44%200L1.698%2013.132a.25.25%200%200%200%20.22.368h12.164a.25.25%200%200%200%20.22-.368Zm.53%203.996v2.5a.75.75%200%200%201-1.5%200v-2.5a.75.75%200%200%201%201.5%200M9%2011a1%201%200%201%201-2%200%201%201%200%200%201%202%200%22/%3E%3C/svg%3E');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M2.344%202.343za8%208%200%200%201%2011.314%2011.314A8.002%208.002%200%200%201%20.234%2010.089a8%208%200%200%201%202.11-7.746m1.06%2010.253a6.5%206.5%200%201%200%209.108-9.275%206.5%206.5%200%200%200-9.108%209.275M6.03%204.97%208%206.94l1.97-1.97a.749.749%200%200%201%201.275.326.75.75%200%200%201-.215.734L9.06%208l1.97%201.97a.749.749%200%200%201-.326%201.275.75.75%200%200%201-.734-.215L8%209.06l-1.97%201.97a.749.749%200%200%201-1.275-.326.75.75%200%200%201%20.215-.734L6.94%208%204.97%206.03a.75.75%200%200%201%20.018-1.042.75.75%200%200%201%201.042-.018%22/%3E%3C/svg%3E');--md-admonition-icon--caution:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M9.504.43a1.516%201.516%200%200%201%202.437%201.713L10.415%205.5h2.123c1.57%200%202.346%201.909%201.22%203.004l-7.34%207.142a1.25%201.25%200%200%201-.871.354h-.302a1.25%201.25%200%200%201-1.157-1.723L5.633%2010.5H3.462c-1.57%200-2.346-1.909-1.22-3.004zm1.047%201.074L3.286%208.571A.25.25%200%200%200%203.462%209H6.75a.75.75%200%200%201%20.694%201.034l-1.713%204.188%206.982-6.793A.25.25%200%200%200%2012.538%207H9.25a.75.75%200%200%201-.683-1.06l2.008-4.418.003-.006-.004-.009-.006-.006-.008-.001q-.005%200-.009.004%22/%3E%3C/svg%3E');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M9.504.43a1.516%201.516%200%200%201%202.437%201.713L10.415%205.5h2.123c1.57%200%202.346%201.909%201.22%203.004l-7.34%207.142a1.25%201.25%200%200%201-.871.354h-.302a1.25%201.25%200%200%201-1.157-1.723L5.633%2010.5H3.462c-1.57%200-2.346-1.909-1.22-3.004zm1.047%201.074L3.286%208.571A.25.25%200%200%200%203.462%209H6.75a.75.75%200%200%201%20.694%201.034l-1.713%204.188%206.982-6.793A.25.25%200%200%200%2012.538%207H9.25a.75.75%200%200%201-.683-1.06l2.008-4.418.003-.006-.004-.009-.006-.006-.008-.001q-.005%200-.009.004%22/%3E%3C/svg%3E');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M4.72.22a.75.75%200%200%201%201.06%200l1%20.999a3.5%203.5%200%200%201%202.441%200l.999-1a.748.748%200%200%201%201.265.332.75.75%200%200%201-.205.729l-.775.776c.616.63.995%201.493.995%202.444v.327q0%20.15-.025.292c.408.14.764.392%201.029.722l1.968-.787a.75.75%200%200%201%20.556%201.392L13%207.258V9h2.25a.75.75%200%200%201%200%201.5H13v.5q-.002.615-.141%201.186l2.17.868a.75.75%200%200%201-.557%201.392l-2.184-.873A5%205%200%200%201%208%2016a5%205%200%200%201-4.288-2.427l-2.183.873a.75.75%200%200%201-.558-1.392l2.17-.868A5%205%200%200%201%203%2011v-.5H.75a.75.75%200%200%201%200-1.5H3V7.258L.971%206.446a.75.75%200%200%201%20.558-1.392l1.967.787c.265-.33.62-.583%201.03-.722a1.7%201.7%200%200%201-.026-.292V4.5c0-.951.38-1.814.995-2.444L4.72%201.28a.75.75%200%200%201%200-1.06m.53%206.28a.75.75%200%200%200-.75.75V11a3.5%203.5%200%201%200%207%200V7.25a.75.75%200%200%200-.75-.75ZM6.173%205h3.654A.17.17%200%200%200%2010%204.827V4.5a2%202%200%201%200-4%200v.327c0%20.096.077.173.173.173%22/%3E%3C/svg%3E');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M5%205.782V2.5h-.25a.75.75%200%200%201%200-1.5h6.5a.75.75%200%200%201%200%201.5H11v3.282l3.666%205.76C15.619%2013.04%2014.543%2015%2012.767%2015H3.233c-1.776%200-2.852-1.96-1.899-3.458Zm-2.4%206.565a.75.75%200%200%200%20.633%201.153h9.534a.75.75%200%200%200%20.633-1.153L12.225%2010.5h-8.45ZM9.5%202.5h-3V6c0%20.143-.04.283-.117.403L4.73%209h6.54L9.617%206.403A.75.75%200%200%201%209.5%206Z%22/%3E%3C/svg%3E');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M1.75%202.5h10.5a.75.75%200%200%201%200%201.5H1.75a.75.75%200%200%201%200-1.5m4%205h8.5a.75.75%200%200%201%200%201.5h-8.5a.75.75%200%200%201%200-1.5m0%205h8.5a.75.75%200%200%201%200%201.5h-8.5a.75.75%200%200%201%200-1.5M2.5%207.75v6a.75.75%200%200%201-1.5%200v-6a.75.75%200%200%201%201.5%200%22/%3E%3C/svg%3E');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#audio-thinker-guiding-audio-language-model-when-and-how-to-think-via-reinforcement-learning" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="PARS - Papers And Research Summaries" class="md-header__button md-logo" aria-label="PARS - Papers And Research Summaries" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PARS - Papers And Research Summaries
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Audio-Thinker: Guiding Audio Language Model When and How to Think via Reinforcement Learning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5M7 15a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/xjsc01/pars" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    xjsc01/pars
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  PARS
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  01 论文阅读
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../02-%E6%A8%A1%E5%9E%8B%E6%A8%A1%E5%9D%97/%E5%90%91%E9%87%8F%E9%87%8F%E5%8C%96%28vector%20quantization%29/" class="md-tabs__link">
+          
+  
+  
+  02 模型模块
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../03-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/%E4%BC%B0%E8%AE%A1%E5%8F%82%E6%95%B0%E9%87%8F%E5%92%8C%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97%E6%AC%A1%E6%95%B0/" class="md-tabs__link">
+          
+  
+  
+  03 代码实现
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="PARS - Papers And Research Summaries" class="md-nav__button md-logo" aria-label="PARS - Papers And Research Summaries" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    PARS - Papers And Research Summaries
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/xjsc01/pars" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    xjsc01/pars
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PARS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    01 论文阅读
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            01 论文阅读
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Audio-Thinker: Guiding Audio Language Model When and How to Think via Reinforcement Learning
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Audio-Thinker: Guiding Audio Language Model When and How to Think via Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      贡献点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      背景知识
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      流程图
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      存在的问题与解决方案
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="存在的问题与解决方案">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explicit-thinking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explicit Thinking 有时候并不会生成更好的结果
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      仅仅添加 prompt 无法准确识别是否需要思考
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-think" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to think
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      模型
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据飞轮
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      损失
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      GRPO
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      结论
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CozyVoice/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CozyVoice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HunyuanVideo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    HunyuanVideo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Single-Codec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Single-Codec
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../UNIAUDIO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    UNIAUDIO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    02 模型模块
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            02 模型模块
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02-%E6%A8%A1%E5%9E%8B%E6%A8%A1%E5%9D%97/%E5%90%91%E9%87%8F%E9%87%8F%E5%8C%96%28vector%20quantization%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    向量量化(vector quantization)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    03 代码实现
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03 代码实现
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/%E4%BC%B0%E8%AE%A1%E5%8F%82%E6%95%B0%E9%87%8F%E5%92%8C%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97%E6%AC%A1%E6%95%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    估计参数量和浮点运算次数
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/%E8%AE%A1%E7%AE%97epoch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    计算epoch
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      贡献点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      背景知识
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      流程图
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      存在的问题与解决方案
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="存在的问题与解决方案">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explicit-thinking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explicit Thinking 有时候并不会生成更好的结果
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      仅仅添加 prompt 无法准确识别是否需要思考
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-think" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to think
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      模型
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据飞轮
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      损失
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      GRPO
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      结论
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/xjsc01/pars/edit/master/docs/01-论文阅读/Audio-Thinker.md" title="编辑此页" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/xjsc01/pars/raw/master/docs/01-论文阅读/Audio-Thinker.md" title="查看本页的源代码" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="audio-thinker-guiding-audio-language-model-when-and-how-to-think-via-reinforcement-learning">Audio-Thinker: Guiding Audio Language Model When and How to Think via Reinforcement Learning</h1>
+<h2 id="_1">贡献点</h2>
+<p>• 音频思考者(Audio-Thinker)：我们提出Audio-Thinker这一通用强化学习框架，该框架能使LALMs探索有效推理策略的同时<strong>提升推理质量</strong>。<br />
+• 何时思考：我们引入自适应思维准确度奖励机制，通过训练LALMs<strong>根据任务复杂度调整推理策略</strong>，引导模型寻找最优推理路径。<br />
+• 如何思考：我们整合基于<em>思维过程的奖励函数</em>，评估推理的<em>一致性与质量</em>，<strong>使模型在训练中能区分有效与缺陷推理流程。</strong><br />
+• 顶尖性能表现：实验结果表明，我们的Audio-Thinker模型在MMAU（Sakshi等人，2024）、MMAR（Ma等人，2025b）和AIR（Yang等人，2024b）等多项基准测试中持续领先现有LALMs，突显其强大的推理与泛化能力。</p>
+<p>外部专家监督：引入外部 LLM 作为“思维监督者”，指导模型生成更连贯有效的推理过程。</p>
+<h2 id="_2">背景知识</h2>
+<ol>
+<li>LLM、MLLM、LALM 都通过基于规则奖励的强化学习提升了性能</li>
+<li>在音频理解领域的显式推理（模型的输出必须推理）目前的意义并不大</li>
+</ol>
+<p><strong>LLM 的推理能力</strong>：</p>
+<ul>
+<li>通过链式思维（CoT）、多样化的认知框架、以及强化学习（RL）方法，LLM 的推理表现显著增强。</li>
+<li>小模型在结构化推理上更擅长，大模型则在非结构化推理上效果更好。</li>
+<li>RL 调优（如 GRPO 算法）能让模型在数学、编程等复杂任务上超过传统监督学习。</li>
+</ul>
+<p><strong>MLLM 的 RL 研究</strong>：</p>
+<ul>
+<li>近年的工作（Huang, Liu, Pan, Zhou 等 2025）在目标识别、语义分割、视频分析等方面应用 RL。</li>
+<li>在数据有限的场景下，RL 能使 MLLM 达到或超越监督微调（SFT）的水平，特别是在分布外任务（OOD）中表现更优。</li>
+</ul>
+<p><strong>音频-语言模型的不足</strong>：</p>
+<ul>
+<li>大型音频语言模型（LALM，如 Audio Flamingo、SALMONN、Qwen2-Audio）主要集中在感知与基础问答，没有显式推理机制。</li>
+<li>Audio-Reasoner 和 R1-AQA 尝试在 Qwen2-Audio 基础上引入链式推理与 GRPO，但发现仅仅添加推理链并无显著提升。</li>
+<li>SARI 尝试结合结构化与非结构化推理进行 RL 微调，但仍不及纯 RL 训练的 Omni-R1。</li>
+</ul>
+<hr />
+<p>Large Audio Language Models (LALMs)</p>
+<p>LALM 已经能很好地处理音频，但缺乏深度推理</p>
+<ul>
+<li>随着 LLM 的进步，多模态大语言模型（MLLMs）逐渐具备理解和推理多种模态的能力，包括音频。</li>
+<li>代表性工作：</li>
+<li><strong>Qwen2-Audio</strong> (Yang et al., 2024a)</li>
+<li><strong>Audio Flamingo</strong> (Kong et al., 2024b)</li>
+<li><strong>SALMONN</strong> (Tang et al., 2023)</li>
+<li>这些模型在音频理解和处理任务中表现优异，但主要集中在感知层面，还未深入到复杂推理。</li>
+</ul>
+<hr />
+<p>Language and Multimodal Reasoning</p>
+<p>语言与多模态推理中，RL 已被证明能显著增强模型的推理能力</p>
+<ul>
+<li>最近一系列语言与多模态模型通过 <strong>强化学习（RL）</strong> 显著提升了推理性能：</li>
+<li><strong>OpenAI-o1</strong> (Jaech et al., 2024)</li>
+<li><strong>Kimi K1.5</strong> (Team et al., 2025)</li>
+<li><strong>DeepSeekR1</strong> (Guo et al., 2025)</li>
+<li>RL 带来的进展包括：</li>
+<li>推理性能显著提升 (Jin et al., 2025; Peng et al., 2025)</li>
+<li>方法复现和验证 (Xie et al., 2025a)</li>
+<li>算法效率优化 (Yu et al., 2025)</li>
+<li>典型的跨模态 RL 推理模型：</li>
+<li><strong>Vision-R1</strong> (Huang et al., 2025a)：通过逐步抑制训练减少“过度思考”。</li>
+<li><strong>Video-R1</strong> (Feng et al., 2025)：探索视频推理的 RL 策略。</li>
+<li><strong>LMM-R1</strong>：基于规则的 RL 框架，用于提升多模态推理。</li>
+</ul>
+<hr />
+<p>Audio Models with Reasoning</p>
+<p>在音频-语言模型领域，逐步出现结合 CoT 与 RL 的尝试（Mellow、Audio-Reasoner、R1-AQA、SARI、Omni-R1），逐渐逼近甚至刷新 SOTA</p>
+<ul>
+<li>越来越多的研究开始在音频-语言模型中引入推理机制：</li>
+<li><strong>Mellow</strong> (Deshmukh et al., 2025)：轻量级（1.67亿参数），在小规模数据上训练却超过更大模型，展现出强推理能力。</li>
+<li><strong>Audio-CoT</strong> (Ma et al., 2025a)：首次在音频模型中引入链式思维 (CoT)，但缺乏持续更新，提升有限。</li>
+<li><strong>Audio-Reasoner</strong> (Xie et al., 2025b)：设计了分阶段的“思考”架构（规划、描述、推理、总结），并依赖大规模 CoTA 数据集。</li>
+<li><strong>R1-AQA</strong> (Li et al., 2025a)：在 Qwen2-Audio 上用 GRPO 进行 RL 微调，实现了在数据较少时的高效优化。</li>
+<li><strong>SARI</strong> (Wen et al., 2025)：在 Qwen2.5-Omni 上结合 CoT 与 RL 训练，采用课程学习方法增强推理。</li>
+<li><strong>Omni-R1</strong> (Rouditchenko et al., 2025)：在 Qwen2.5-Omni 上用 GRPO 微调，使用简洁提示高效训练与测试，最终达成新的 SOTA。</li>
+</ul>
+<hr />
+<h2 id="_3">流程图</h2>
+<p><img alt="image-20250903203824044" src="../Audio-Thinker.assets/image-20250903203824044.png" /></p>
+<p>本研究提出Audio-Thinker——一种集成模型生成思维奖励与自适应结果奖励的音频语言强化学习框架。该方法引导模型进行难度感知、一致且有效的推理。为加强自适应推理，我们引入自适应思维准确性奖励，使模型能根据任务复杂度调整推理策略。同时，通过融合评估推理过程质量的思维奖励，解决了奖励欺诈问题。多基准实验结果表明，Audio-Thinker始终优于现有LALMs。我们的发现强调了自适应推理的重要性，以及监督思维过程（而非仅关注最终正确性）的关键价值，为音频语言推理模型的未来发展提供了重要启示。</p>
+<h2 id="_4">存在的问题与解决方案</h2>
+<h3 id="explicit-thinking">Explicit Thinking 有时候并不会生成更好的结果</h3>
+<ul>
+<li>关于大语言模型（LLMs）和多模态大语言模型（MLLMs）的研究经常认为，显式推理能够增强推理能力。</li>
+<li>R1-AQA和Omni-R1的研究表明，<strong>显式推理过程在自动问答（AQA）任务中并未带来显著优势。</strong></li>
+</ul>
+<h3 id="prompt">仅仅添加 prompt 无法准确识别是否需要思考</h3>
+<p><img alt="image-20250903230911841" src="../Audio-Thinker.assets/image-20250903230911841.png" /></p>
+<p>如果仅仅给 prompt，随着难度变化，模型给出<code>think</code>或者是<code>no_think</code>的概率不会发生变化。</p>
+<p>在文章后面作者使用强化学习来使得模型懂得何时思考</p>
+<h3 id="how-to-think">How to think</h3>
+<p>在强化学习过程中，不能仅仅查看最终结果是否正确，还需要对中间步骤以及一致性进行匹配。</p>
+<h2 id="_5">模型</h2>
+<p><img alt="image-20250903231756145" src="../Audio-Thinker.assets/image-20250903231756145.png" /></p>
+<h3 id="_6">数据飞轮</h3>
+<p>引导模型判断是否需要思考的 prompt，后续步骤中有关于是否需要思考的 GRPO 方式。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>First, identify whether this problem requires thinking. If the problem requires thinking, output thinking process in &lt;think&gt; &lt;/think&gt; and final answer inside &lt;answer&gt; &lt;/answer&gt;. If no thinking is required, and the final output answer in &lt;answer&gt; &lt;/answer&gt; The Assistant is encouraged to use the &lt;answer&gt;&lt;/answer&gt; tag whenever possible, while ensuring accuracy.
+</code></pre></div>
+<p>造 COT</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>We are developing a system to generate structured audio-based chain-of-thought reasoning data. Given an audio clip, its description, a question, and an answer, your task is to reconstruct the reasoning process in two parts: the internal &lt;think&gt; section and the user-facing &lt;response&gt; section. The &lt;think&gt; section must follow four steps: planning,captioning, reasoning, and summarizing. Based on this, the &lt;response&gt; should provide a final answer. Your output must strictly follow this format: &lt;think&gt;&lt;planning&gt;. Analyze the user’s intent and break down complex tasks into steps if needed. &lt;/planning&gt;&lt;caption&gt; Examine the audio input, identify relevant segments, and describe them accurately. &lt;/caption&gt;&lt;reasoning&gt; Use the identified information to reason toward an answer.
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>&lt;/reasoning&gt;&lt;summary&gt; Conclude based on the reasoning above. &lt;/summary&gt;&lt;/think&gt;&lt;answer&gt; Give the final answer here referring to the &lt;think&gt; part &lt;/answer&gt; Please strictly follow the format of the sample.  Note that you have both the question and the answer because it is necessary to ensure the correctness of the chain of thought. However, in your response, you can only refer to the content of the question and the audio, which leads to the answer. You must not assume that you already know the answer.  Here is the original description: *** caption here ***.  The question is: *** question here ***.  The answer you can refer to: *** answer here ***.
+</code></pre></div>
+<h3 id="_7">损失</h3>
+<p><strong>Format Reward</strong>：不论是有无思考，只要格式正确，就得一分</p>
+<p><strong>Adaptive Think Accuracy Reward</strong></p>
+<ul>
+<li>Case 1：think &amp; correct → <strong>+1</strong></li>
+<li>Case 2：think &amp; incorrect → <strong>0</strong></li>
+<li>Case 3：no-think &amp; correct → <strong>+2</strong></li>
+<li>Case 4：no-think &amp; incorrect → <strong>−1</strong></li>
+</ul>
+<hr />
+<p>在训练过程中，模型可能会倾向于一种输出，使用 batch-level 平衡因子。</p>
+<p><img alt="image-20250903232607234" src="../Audio-Thinker.assets/image-20250903232607234.png" /></p>
+<p><img alt="image-20250903232616267" src="../Audio-Thinker.assets/image-20250903232616267.png" /></p>
+<p><img alt="image-20250903232951517" src="../Audio-Thinker.assets/image-20250903232951517.png" /></p>
+<p><strong>Consistency Reward</strong>：</p>
+<ul>
+<li>如果不控制，模型可能会倾向于学习如何生成正确的答案，而不是学习如何思考，可能会输出随机、重复内容，甚至可能会出现思考过程的结论与最终结论不一致的情况，导致推理过程不透明</li>
+<li>如果进行思考，思考和输出一致则得一分</li>
+<li>如果没有思考，默认得一分</li>
+</ul>
+<p><strong>Think Reward</strong></p>
+<ul>
+<li>为了对思考过程进行进一步规范</li>
+<li>使用 <strong>Qwen3-8B-Base</strong> 作为评估器，针对模型生成的中间推理步骤打分，范围为 <strong>0~1，步长 0.1</strong>。</li>
+<li>该分数只基于推理过程质量，不考虑最终答案是否正确。</li>
+<li>对于 <strong>no-think</strong> 模式的样本，think reward 取当前 batch 中所有 think reward 的平均值。</li>
+</ul>
+<p><img alt="image-20250903233043873" src="../Audio-Thinker.assets/image-20250903233043873.png" /></p>
+<h3 id="grpo">GRPO</h3>
+<p><img alt="image-20250903233203486" src="../Audio-Thinker.assets/image-20250903233203486.png" /></p>
+<p><img alt="image-20250903233108433" src="../Audio-Thinker.assets/image-20250903233108433.png" /></p>
+<h2 id="_8">数据</h2>
+<ul>
+<li><strong>训练数据</strong>：来自 <strong>AVQA</strong> (Yang et al., 2022a)，一个经典的音频-视觉问答数据集。</li>
+<li><strong>处理方法</strong>：</li>
+<li>参照 <strong>R1-AQA</strong> 的方式，仅提取音频，构建 <strong>音频-文本对</strong>。</li>
+<li>将问题中的 “video” 替换为 “audio”，最终得到 <strong>40,176 条训练样本</strong>。</li>
+<li><strong>SFT with CoT</strong>：</li>
+<li>使用 <strong>Qwen2-Audio-7B-Instruct</strong> 在 AVQA 上生成音频描述。</li>
+<li>再用 <strong>Qwen2.5-72B-Instruct2</strong> 生成 <strong>Chain-of-Thought (CoT)</strong> 推理链，输入包括 <strong>caption + question + answer</strong>。</li>
+<li>生成提示（prompt）细节见附录 A.2。</li>
+</ul>
+<h2 id="_9">结论</h2>
+<p><img alt="image-20250903233354973" src="../Audio-Thinker.assets/image-20250903233354973.png" /></p>
+<p>6.1.2 Effectiveness of Adaptive Think Accuracy Reward (ATAR)</p>
+<ul>
+<li><strong>对比对象</strong>：</li>
+<li>含有 ATAR 的 model-a/d</li>
+<li>标准 GRPO 训练的 grpo-a/b/c/d</li>
+<li><strong>结果</strong>：</li>
+<li>Qwen2-Audio: model-a 相比 grpo-a，分别在 <strong>MMAU +3.10, AIR +0.50, MMAR +1.9</strong>。</li>
+<li>Qwen2-Audio: model-a 相比 grpo-b，分别在 <strong>MMAU +1.90, AIR +0.70, MMAR +2.3</strong>。</li>
+<li>Qwen2.5-Omni: model-d 相比 grpo-c，分别在 <strong>MMAU +1.80, AIR +1.70, MMAR +0.6</strong>。</li>
+<li>Qwen2.5-Omni: model-d 相比 grpo-d，分别在 <strong>MMAU +1.70, AIR +2.40, MMAR +0.9</strong>。</li>
+<li><strong>结论</strong>：ATAR 显著增强了推理能力，特别是在复杂问题上。</li>
+</ul>
+<hr />
+<p>6.1.3 Necessity of Consistency Reward (CR)</p>
+<ul>
+<li><strong>对比对象</strong>：</li>
+<li>含有 CR 的 model-b/e</li>
+<li>不含 CR 的 model-a/d</li>
+<li><strong>结果</strong>：</li>
+<li>Qwen2-Audio: model-b 相比 model-a → <strong>MMAU +0.80, AIR +0.20, MMAR +0.10</strong>。</li>
+<li>Qwen2.5-Omni: model-e 相比 model-d → <strong>MMAU +1.00, AIR +0.20, MMAR +0.20</strong>。</li>
+<li><strong>结论</strong>：CR 提供了 <strong>早期稳定机制</strong>，缓解推理过程中的不一致性。</li>
+</ul>
+<hr />
+<p>6.1.4 Impact of Think Reward (TR)</p>
+<ul>
+<li><strong>对比对象</strong>：</li>
+<li>含有 TR 的 model-c/f</li>
+<li>不含 TR 的 model-b/e</li>
+<li><strong>结果</strong>：</li>
+<li>Qwen2-Audio: model-c 相比 model-b → <strong>MMAU +0.30, AIR +1.10, MMAR +0.3</strong>。</li>
+<li>Qwen2.5-Omni: model-f 相比 model-e → <strong>MMAU +1.20, AIR +0.90, MMAR +0.1</strong>。</li>
+<li><strong>结论</strong>：TR 能持续提升推理质量，表明引入专家 LLM 作为中间推理评价者有效。</li>
+</ul>
+<p><img alt="image-20250903233452769" src="../Audio-Thinker.assets/image-20250903233452769.png" /></p>
+<p><img alt="image-20250903233503159" src="../Audio-Thinker.assets/image-20250903233503159.png" /></p>
+<p><img alt="image-20250903233508789" src="../Audio-Thinker.assets/image-20250903233508789.png" /></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="上一页: PARS">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                PARS
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../CozyVoice/" class="md-footer__link md-footer__link--next" aria-label="下一页: CozyVoice">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                CozyVoice
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2024 xjsc01
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.footer", "navigation.top", "navigation.sections", "content.tabs.link", "dark_mode.toggle", "content.code.copy", "content.action.edit", "content.action.view", "content.code.annotate", "navigation.instant.progress"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+      
+    
+  </body>
+</html>
